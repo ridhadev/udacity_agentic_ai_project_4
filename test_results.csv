@@ -1,0 +1,37 @@
+request_id,request_date,cash_balance,inventory_value,response
+1,2025-04-01,45119.7,4875.3,"Thank you for your order! Here’s the breakdown: 200 sheets of A4 glossy paper at $0.20 each totals $40.00; 100 sheets of heavy cardstock at $0.15 each totals $15.00; and 100 sheets of colored paper at $0.10 each totals $10.00. Since you're ordering in bulk across categories, I'll apply a rounding discount of $5.00, bringing your total to a rounded and tidy $60.00. This ensures you receive the best deal for your event preparation."
+2,2025-04-03,45119.7,4875.3,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'balloons' is not in the catalog
+- The following items: Item 'roll of streamers' is not available for the moment."
+3,2025-04-04,45119.7,4875.3,"Thank you for your order! Here’s the breakdown: 10,000 sheets of A4 paper, 5,000 sheets of A3 paper, and 500 reams of printer paper will be ready for delivery by April 15, 2025. The initial unit price for these items has been calculated, and we’ll apply an overall discount for your bulk order, making your total cost convenient and optimal for your upcoming conference."
+4,2025-04-05,45186.135,4810.75,"Thank you for your order! Here’s the breakdown: 500 sheets of high-quality recycled cardstock at $0.15 each totals $75.00; 250 sheets of A4 size printer paper at $0.05 each totals $12.50. Since you're ordering in bulk across categories, I'll apply a bulk discount of $7.50, bringing your total to a rounded and tidy $80.00. This ensures you receive the best deal for your event preparation."
+5,2025-04-05,45186.135,4810.75,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'decorative washi tape' is not available for the moment."
+6,2025-04-06,45186.135,4810.75,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'Construction paper' is not available for the moment., Item 'Standard copy paper' is not available for the moment., Item 'Cardstock' is not available for the moment."
+7,2025-04-07,45186.135,4810.75,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'Matte paper' is not available for the moment."
+8,2025-04-07,45347.885,4947.249999999999,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'A4 matte paper' is not available for the moment., Item 'A4 recycled paper' is not available for the moment."
+9,2025-04-07,45347.885,4947.249999999999,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item '100% recycled kraft paper envelopes' is not available for the moment."
+13,2025-04-08,45347.885,4947.249999999999,"Order cannot be delivered on time, The earliest delivery date is 2025-04-12 00:00:00 and the requested delivery date is 2025-04-10."
+12,2025-04-08,45347.885,4947.249999999999,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'standard printer paper' is not available for the moment., Item 'paper napkins' is not available for the moment."
+10,2025-04-08,45456.385,4847.25,"Thank you for your order! Here’s the breakdown: 500 sheets of high-quality glossy paper at $0.20 each totals $100.00; 300 sheets of sturdy cardstock at $0.15 each comes to $45.00. Since you're ordering in bulk across categories, I'll apply a bulk discount, bringing your total to a rounded and tidy $140.00. This ensures you receive the best deal for your event preparation."
+11,2025-04-08,45456.385,4847.25,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'A4 matte paper' is not available for the moment."
+14,2025-04-09,45456.385,4847.25,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'poster paper' is not available for the moment."
+15,2025-04-12,45456.385,4847.25,"Order cannot be delivered on time, The earliest delivery date is 2025-04-19 00:00:00 and the requested delivery date is 2025-04-15."
+16,2025-04-13,45456.385,4847.25,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'colorful construction paper' is not available for the moment."
+17,2025-04-14,45456.385,4847.25,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'table napkins (white)' is not available for the moment., Item 'paper cups (biodegradable)' is not available for the moment."
+18,2025-04-14,45456.385,4847.25,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'standard printing paper' is not available for the moment."
+19,2025-04-15,45456.385,4847.25,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'A3 matte paper' is not available for the moment."
+20,2025-04-17,45456.385,4847.25,"Sorry, we are unable to process your request due to the following issues:
+- The following items: Item 'tickets' is not in the catalog
+- The following items: Item 'flyers' is not available for the moment., Item 'posters' is not available for the moment."
