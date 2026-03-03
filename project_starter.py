@@ -616,10 +616,6 @@ def search_quote_history(search_terms: List[str], limit: int = 5) -> List[Dict]:
 
 # Set up and load your env parameters and instantiate your model.
 
-
-"""Set up tools for your agents to use, these should be methods that combine the database functions above
- and apply criteria to them to ensure that the flow of the system is correct."""
-
 @tool
 def match_items_to_catalog(customer_items: List[Dict[str, str]]) -> str:
     """Match customer-requested item names to exact catalog names.
@@ -715,6 +711,8 @@ def match_items_to_catalog(customer_items: List[Dict[str, str]]) -> str:
     )}
 
 # Tools for inventory agent
+"""Set up tools for your agents to use, these should be methods that combine the database functions above
+ and apply criteria to them to ensure that the flow of the system is correct."""
 
 def get_inventory_item_names() -> List[str]:
     """Return all item names in the inventory table or catalog as a list."""
@@ -737,7 +735,6 @@ class InventoryAgent(ToolCallingAgent):
     def __init__(self, model: OpenAIServerModel):
         self.model = model
         self.inventor_items = get_inventory_item_names()
-        self.inventory_order_status = []
         
         @tool
         def check_stock_level(ordered_items: List[Dict[str, str]], request_date: str, delivery_date: str) -> List[Dict[str, str]]:
@@ -790,8 +787,7 @@ class InventoryAgent(ToolCallingAgent):
 
             # Check the stock level of each ordered item    
             for item_name, quantity in items_in_catalog.items():                
-                stock_level = all_inventory.get(item_name, 0) #get_stock_level(item_name, request_date)
-                #stock_level = int(stock_level.iloc[0]["current_stock"])
+                stock_level = all_inventory.get(item_name, 0)
                 
                 min_stock_level = get_inventory_item_min_stock_level(item_name)
                 
@@ -944,21 +940,16 @@ class QuotingAgent(ToolCallingAgent):
             self.quote_result = {}
 
             total_price = 0.0
-            total_quantity = 0
-            items_order_dict = {}
             item_catolog_price_dict= {}
             for item in inventory_items_order:
                 item_name = item["item_name"]
                 quantity = int(item["quantity"])
-                items_order_dict[item_name] = quantity
 
-                # Compute the total price for this item using the catalog price
                 item_catolog_price = get_inventory_item_unit_price(item_name)
                 raw_order_price =  item_catolog_price * quantity
                 item_catolog_price_dict[item_name] = (quantity, item_catolog_price, raw_order_price)
 
                 total_price += raw_order_price
-                total_quantity += quantity
                 
             strategy = get_quote_strategy(inventory_items_order, total_price)
             
@@ -1054,8 +1045,6 @@ class TransactionsAgent(ToolCallingAgent):
             # Latest delivery date is the request date + 1 day
             earliest_delivery_date = datetime.fromisoformat(request_date) + timedelta(days=1)
             stock_order_items = {}
- 
-            #basic_items_total_price = {}
             for item in oredered_items_dicts:
                 if item["in_stock"]:
                     continue
@@ -1065,8 +1054,6 @@ class TransactionsAgent(ToolCallingAgent):
                     continue
 
                 stock_order_items[item["item_name"]] = stock_order_quantity
-                
-                #basic_items_total_price[item["item_name"]] = item["quantity"] * get_inventory_item_unit_price(item["item_name"])
                 
                 supplier_delivery_date = get_supplier_delivery_date(request_date, stock_order_quantity)
                 
@@ -1086,15 +1073,12 @@ class TransactionsAgent(ToolCallingAgent):
 
             financial_report_before_transactions = generate_financial_report(request_date)
 
-            # Calculate the total cost of the stock_orders transactions
-            # Simulate the reorder price with a margin percentage
-            margin_percentage_pct = SUPPLY_MARGIN_PCT
             total_supplier_cost = 0.0
             stock_order_prices = {}
 
             for item_name, stock_order_quantity in stock_order_items.items():
                 stock_order_price = get_inventory_item_unit_price(item_name) * stock_order_quantity
-                stock_order_price = stock_order_price * (1 - margin_percentage_pct)
+                stock_order_price = stock_order_price * (1 - SUPPLY_MARGIN_PCT)
                 total_supplier_cost += stock_order_price
                 stock_order_prices[item_name] = stock_order_price
 
@@ -1110,7 +1094,7 @@ class TransactionsAgent(ToolCallingAgent):
 
             # Perform stock_orders transactions
             for item_name, stock_order_price in stock_order_prices.items():
-                create_transaction(item_name, "stock_orders", stock_order_quantity, stock_order_price, request_date)
+                create_transaction(item_name, "stock_orders", stock_order_items[item_name], stock_order_price, request_date)
                 
             # Perform orders transactions
             stock_level_after_transactions = {}
@@ -1118,7 +1102,6 @@ class TransactionsAgent(ToolCallingAgent):
                 order_quantity = discount_detail["quantity"] 
                 item_discounted_price = discount_detail["total_order_price_after_discount"]
                 create_transaction(item_name, "sales", order_quantity, item_discounted_price, request_date)
-                current_financial_report = generate_financial_report(request_date)
                 stock_level_after_transactions[item_name] = get_stock_level(item_name, request_date)
             
             financial_report_after_transactions = generate_financial_report(request_date)
@@ -1126,7 +1109,7 @@ class TransactionsAgent(ToolCallingAgent):
             cash_balance_diff = financial_report_after_transactions["cash_balance"] - financial_report_before_transactions["cash_balance"]
             
             # Apply the margin percentage to the unit price.
-            inventory_value_diff = margin_percentage_pct * ( financial_report_after_transactions['inventory_value'] - financial_report_before_transactions['inventory_value'])
+            inventory_value_diff = SUPPLY_MARGIN_PCT * ( financial_report_after_transactions['inventory_value'] - financial_report_before_transactions['inventory_value'])
         
             return {
                 "success": True,
@@ -1158,9 +1141,6 @@ class OrderRequestOrchestrator(ToolCallingAgent):
         self.quoting_agent = QuotingAgent(model)
         # Only one attempt to complete the transactions and not corrupt the database.
         self.transactions_agent = TransactionsAgent(model, max_attempts=1) 
-        self.initial_order_items = {}
-        self.initial_delivery_date = None
-        
         @tool
         def process_order_request(customer_message: str, order_request_details: List[Dict[str, str]], request_date: str, delivery_date: str) -> str:
             """
@@ -1387,9 +1367,6 @@ def run_test_scenarios():
 
     results = []
     for idx, row in quote_requests_sample.iterrows():
-        # Test only the first request
-        # if idx != 0:
-        #     continue
 
         request_date = row["request_date"].strftime("%Y-%m-%d")
 
@@ -1453,7 +1430,3 @@ def run_test_scenarios():
 
 if __name__ == "__main__":
     results = run_test_scenarios()
-    #get_inventory_item_min_stock_level("A4 paper")
-    #print("Stock level of A4 paper: ", get_stock_level("A4 paper", "2025-04-01").iloc[0]["current_stock"])
-    #print("Test 1: ", search_quote_history(["A4 paper", "cardstock", "300", "500", "200"]))
-   
